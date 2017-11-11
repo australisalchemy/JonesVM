@@ -43,13 +43,15 @@
   <ItemGroup>
     <Compile Include="Bit.cs" />
     <Compile Include="CPU\Operations\MachineException.cs" />
+    <Compile Include="CPU\Operations\MachineOperations.cs" />
     <Compile Include="CPU\Operations\MathOperations.cs" />
     <Compile Include="CPU\Register.cs" />
+    <Compile Include="Executive\Assembler\Tools.cs" />
+    <Compile Include="Executive\Assembler\LabelScanner.cs" />
+    <Compile Include="Executive\Assembler\Reader.cs" />
     <Compile Include="Executive\Runtime\Registers.cs" />
     <Compile Include="CPU\Opcodes.cs" />
-    <Compile Include="Executive\Compiler\JInterpreter.cs" />
-    <Compile Include="Executive\Compiler\JBinary.cs" />
-    <Compile Include="Executive\Compiler\JCompiler.cs" />
+    <Compile Include="Executive\Assembler\JAssembler.cs" />
     <Compile Include="Executive\Runtime\JExecutive.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

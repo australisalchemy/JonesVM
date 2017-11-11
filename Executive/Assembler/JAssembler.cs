@@ -8,16 +8,16 @@ using JonesVM.CPU;
 using JonesVM.CPU.Operations;
 using System.Collections;
 
-namespace JonesVM.Executive.Compiler
+namespace JonesVM.Executive.Assembler
 {
     // note change bytes to longs or ints (depending on architecture)
     // this class parses our JASM and builds a stream of bytecode that our executive class will execute
-    public class JCompiler
+    public class JAssembler
     {
         private Hashtable _LTable;
-        private string _JBinary;
+        private string _JSource;
         private string _SourcePath;
-        private int JIndex;
+        private int _JIndex;
         private bool _IsHex;
         private ulong _ExLength;
         private bool _IsEnd;
@@ -40,7 +40,7 @@ namespace JonesVM.Executive.Compiler
 
         private const ulong _BinaryMagic = 0xFAC01;
 
-        public JCompiler(string JFilePath)
+        public JAssembler(string JFilePath)
         {
             Console.WriteLine("JVM Compiler© 1.0\nCopyright (c) 2017 Jones Electric");
             Console.WriteLine("=======================================================\n");
@@ -48,7 +48,7 @@ namespace JonesVM.Executive.Compiler
             // return the compiled bytecode for our executive to run
 
             _LTable = new Hashtable(128);
-            JIndex = 0;
+            _JIndex = 0;
             _ExLength = 0;
             _ExecAddr = 0;
             _IsEnd = false;
@@ -58,52 +58,12 @@ namespace JonesVM.Executive.Compiler
 
         }
 
-        private enum StatementType
-        {
-            
-        }
-
-        private string ScanLabelName()
-        {
-            string LName = null;
-
-            while(char.IsLetterOrDigit(_JBinary[JIndex]))
-            {
-                if (_JBinary[JIndex] == ':')
-                {
-                    JIndex++;
-                    break;
-                }
-
-                LName = LName + _JBinary[JIndex];
-                JIndex++;
-            }
-            return LName.ToUpper();
-        }
-
         private void IgnoreWhiteSpaces()
         {
-            while (char.IsWhiteSpace(_JBinary[JIndex]))
+            while (char.IsWhiteSpace(_JSource[_JIndex]))
             {
-                JIndex++;
+                _JIndex++;
             }
-        }
-
-        private ulong ReadWord()
-        {
-            ulong MethodValue;
-            string LineValue = null;
-
-            if (_JBinary[JIndex] == '$') { JIndex++; _IsHex = true; }
-            if (!_IsHex && (char.IsLetter(_JBinary[JIndex]))) { MethodValue = (ulong)_LTable[ScanLabelName()]; return MethodValue; }
-
-            while (char.IsLetterOrDigit(_JBinary[JIndex])) { LineValue = LineValue + _JBinary[JIndex]; JIndex++; }
-
-
-            if (_IsHex) { MethodValue = Convert.ToUInt64(LineValue, 16); }
-            else { MethodValue = ulong.Parse(LineValue); }
-
-            return MethodValue;
         }
 
         private byte ReadByte()
@@ -111,9 +71,9 @@ namespace JonesVM.Executive.Compiler
             byte MethodValue;
             string LineValue = null;
 
-            if (_JBinary[JIndex] == '$') { JIndex++; _IsHex = true; }
+            if (_JSource[_JIndex] == '$') { _JIndex++; _IsHex = true; }
 
-            while (char.IsLetterOrDigit(_JBinary[JIndex])) { LineValue = LineValue + _JBinary[JIndex]; }
+            while (char.IsLetterOrDigit(_JSource[_JIndex])) { LineValue = LineValue + _JSource[_JIndex]; }
 
             if (_IsHex) { MethodValue = Convert.ToByte(LineValue, 16); }
             else { MethodValue = byte.Parse(LineValue); }
@@ -125,7 +85,7 @@ namespace JonesVM.Executive.Compiler
         {
             string opcode = null;
 
-            while (!(char.IsWhiteSpace(_JBinary[JIndex]))) { opcode = opcode + _JBinary[JIndex]; JIndex++; }
+            while (!(char.IsWhiteSpace(_JSource[_JIndex]))) { opcode = opcode + _JSource[_JIndex]; _JIndex++; }
 
             if (opcode.ToUpper() == "LDRA") { LoadRegister(OutFile, IsLabelScan, Register.RA); }
             if (opcode.ToUpper() == "LDRB") { LoadRegister(OutFile, IsLabelScan, Register.RB); }
@@ -153,11 +113,11 @@ namespace JonesVM.Executive.Compiler
             if (opcode.ToUpper() == "HALT") { OutFile.Write((byte)Opcodes.HALT); _ExLength++; }
             if (opcode.ToUpper() == "CALL") { }
             if (opcode.ToUpper() == "JTS") { }
-            if (opcode.ToUpper() == "END") { _IsEnd = true; EndJApp(OutFile, IsLabelScan); IgnoreWhiteSpaces();  _ExecAddr = (ulong)_LTable[(ScanLabelName())]; return; }
+            if (opcode.ToUpper() == "END") { _IsEnd = true; EndJApp(OutFile, IsLabelScan); IgnoreWhiteSpaces();  _ExecAddr = (ulong)LabelScanner.LabelTable[(LabelScanner.ScanLabelName(_JSource, _JIndex))]; return; }
 
-            while (_JBinary[JIndex] != '\n') { JIndex++; }
+            while (_JSource[_JIndex] != '\n') { _JIndex++; }
 
-            JIndex++;
+            _JIndex++;
         }
 
         private Register ReadRegisterValue()
@@ -166,46 +126,46 @@ namespace JonesVM.Executive.Compiler
 
             string Register = null;
 
-            while (char.IsLetterOrDigit(_JBinary[JIndex])) { Register = Register + _JBinary[JIndex]; }
+            while (char.IsLetterOrDigit(_JSource[_JIndex])) { Register = Register + _JSource[_JIndex]; }
 
             switch (Register.ToUpper())
             {
                 case "RA":
-                    JIndex++;
+                    _JIndex++;
                     return CPU.Register.RA;
 
                 case "RB":
-                    JIndex++;
+                    _JIndex++;
                     regs = CPU.Register.RB;
                     break;
 
                 case "RC":
-                    JIndex++;
+                    _JIndex++;
                     regs = CPU.Register.RC;
                     break;
 
                 case "RD":
-                    JIndex++;
+                    _JIndex++;
                     regs = CPU.Register.RD;
                     break;
 
                 case "RX":
-                    JIndex++;
+                    _JIndex++;
                     regs = CPU.Register.RX;
                     break;
 
                 case "RBP":
-                    JIndex++;
+                    _JIndex++;
                     regs = CPU.Register.RBP;
                     break;
 
                 case "RSP":
-                    JIndex++;
+                    _JIndex++;
                     regs = CPU.Register.RSP;
                     break;
 
                 case "RPC":
-                    JIndex++;
+                    _JIndex++;
                     regs = CPU.Register.RPC;
                     break;
             }
@@ -220,26 +180,10 @@ namespace JonesVM.Executive.Compiler
             if (!IsLabelScan) { OutFile.Write((byte)Opcodes.END); }
         }
 
-        private void LabelScanner(BinaryWriter OutFile, bool IsLabelScan)
-        {
-            if (char.IsLetter(_JBinary[JIndex]))
-            {
-                if (IsLabelScan)
-                {
-                    _LTable.Add(ScanLabelName(), _ExLength);
-                    while (_JBinary[JIndex] != '\n') { JIndex++; }
-                    JIndex++;
-                    return;
-                }
-            }
-            IgnoreWhiteSpaces();
-            ReadOpcode(OutFile, IsLabelScan);
-        }
-
         private void LoadRegister(BinaryWriter OutFile, bool IsLabelScan, Register Register)
         {
             IgnoreWhiteSpaces();
-            if (_JBinary[JIndex] == '#') { JIndex++; ulong WValue = ReadWord(); _ExLength += 3; if (!IsLabelScan) { OutFile.Write((byte)Register); OutFile.Write(WValue); } }
+            if (_JSource[_JIndex] == '#') { _JIndex++; ulong WValue = Reader.ReadQWord(_JSource, _JIndex); _ExLength += 3; if (!Tools.IsLabelScan) { OutFile.Write((byte)Register); OutFile.Write(WValue); } }
         }
 
         private void CompareRegister(BinaryWriter OutFile, bool IsLabelScan, Register Register)
@@ -250,12 +194,12 @@ namespace JonesVM.Executive.Compiler
         private void StoreRegister(BinaryWriter OutFile, bool IsLabelScan, Register Register)
         {
             IgnoreWhiteSpaces();
-            if (_JBinary[JIndex] == '%')
+            if (_JSource[_JIndex] == '%')
             {
                 Register r;
                 byte Opcode = 0x00;
 
-                JIndex++;
+                _JIndex++;
 
                 r = ReadRegisterValue();
 
@@ -314,9 +258,9 @@ namespace JonesVM.Executive.Compiler
                     break;
             }
 
-            if (_JBinary[JIndex] == '#')
+            if (_JSource[_JIndex] == '#')
             {
-                JIndex++;
+                _JIndex++;
 
                 _ExLength += 3;
                 if (IsLabelScan) { return; }
@@ -328,12 +272,12 @@ namespace JonesVM.Executive.Compiler
 
         private void ParseAssembly(BinaryWriter OutFile)
         {
-            JIndex = 0;
-            while (!_IsEnd) { LabelScanner(OutFile, true); }
+            _JIndex = 0;
+            while (!_IsEnd) { LabelScanner.ScanLabel(_JSource, _JIndex, OutFile); }
             _IsEnd = false;
-            JIndex = 0;
+            _JIndex = 0;
             _ExLength = Convert.ToUInt64(_ExOrigin);
-            while (!_IsEnd) { LabelScanner(OutFile, false); }
+            while (!_IsEnd) { LabelScanner.ScanLabel(_JSource, _JIndex, OutFile); }
         }
 
         public void CompileAssembly(string OutFileName)
@@ -348,7 +292,7 @@ namespace JonesVM.Executive.Compiler
 
             Console.WriteLine("Source Path: {0}\nOutput Path: {1}.jvm\nPreparing to build headers...\n", _SourcePath, OutFileName);
 
-            _JBinary = AInput.ReadToEnd();
+            _JSource = AInput.ReadToEnd();
             AInput.Close();
 
             BuildHeaders(AOutput);

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
+using JonesVM.Executive.Assembler;
 
 namespace JonesVM.CPU.Operations
 {
@@ -16,23 +18,31 @@ namespace JonesVM.CPU.Operations
             DIV = 0xE3,
         }
 
-        public static ulong ExecMathOperation(MathOperation OperationType)
+        public static void ExMathOperation(string Source, Int32 Index, BinaryWriter Outfile, MathOperation OperationType)
         {
-            switch (OperationType)
+            if (OperationType == MathOperation.ADD)
             {
-                case MathOperation.ADD:
-                    return 0;
-
-                case MathOperation.DIV:
-                    return 1;
-
-                case MathOperation.MUL:
-                    return 2;
-
-                case MathOperation.SUB:
-                    return 3;
+                Outfile.Write((Byte)Opcodes.ADD);
             }
-            return 0;
+            else if (OperationType == MathOperation.DIV)
+            {
+                Outfile.Write((Byte)Opcodes.DIV);
+            }
+            else if (OperationType == MathOperation.SUB)
+            {
+                Outfile.Write((Byte)Opcodes.SUB);
+            }
+            else if (OperationType == MathOperation.MUL)
+            {
+                Outfile.Write((Byte)Opcodes.MUL);
+            }
+
+            if (Source[Index] == '#')
+            {
+                Index++;
+                Tools.ExecutableLength += 3;
+                Outfile.Write(Reader.ReadByte(Source, Index));
+            }
         }
     }
 }
