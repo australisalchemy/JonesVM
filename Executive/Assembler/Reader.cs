@@ -21,16 +21,15 @@ namespace JonesVM.Executive.Assembler
         public static UInt64 ReadQWord(string Source, Int32 Index)
         {
             UInt64 QWordValue;
-            string LineValue = null;
+            string lineValue = String.Empty;
 
             if (Source[Index] == '$') { Index++; Tools.IsHex = true; }
             if (!Tools.IsHex && (char.IsLetter(Source[Index]))) { QWordValue = (UInt64)LabelScanner.LabelTable[LabelScanner.ScanLabelName(Source, Index)]; return QWordValue; }
 
-            while (char.IsLetterOrDigit(Source[Index])) { LineValue = LineValue + Source[Index]; Index++; }
+            while (char.IsLetterOrDigit(Source[Index])) { lineValue = lineValue + Source[Index]; Index++; }
 
-
-            if (Tools.IsHex) { QWordValue = Convert.ToUInt64(LineValue, 16); }
-            else { QWordValue = ulong.Parse(LineValue); }
+            if (Tools.IsHex) { QWordValue = Convert.ToUInt64(lineValue, 16); }
+            else { QWordValue = ulong.Parse(lineValue); }
 
             return QWordValue;
         }
@@ -122,12 +121,12 @@ namespace JonesVM.Executive.Assembler
             if (opcode.ToUpper() == "PUSH") { Outfile.Write((Byte)Opcodes.PUSH); Tools.ExecutableLength++; }
             if (opcode.ToUpper() == "TAKE") { Outfile.Write((Byte)Opcodes.TAKE); Tools.ExecutableLength++; }
 
-            if (opcode.ToUpper() == "ADD") { MathOperations.ExMathOperation(Source, Index, Outfile, MathOperations.MathOperation.ADD); }
-            if (opcode.ToUpper() == "SUB") { MathOperations.ExMathOperation(Source, Index, Outfile, MathOperations.MathOperation.SUB); }
-            if (opcode.ToUpper() == "MUL") { MathOperations.ExMathOperation(Source, Index, Outfile, MathOperations.MathOperation.MUL); }
-            if (opcode.ToUpper() == "DIV") { MathOperations.ExMathOperation(Source, Index, Outfile, MathOperations.MathOperation.DIV); }
+            if (opcode.ToUpper() == "ADD") { MathOperations.PerformMathOperation(Source, Index, Outfile, MathOperations.MathOperation.ADD); }
+            if (opcode.ToUpper() == "SUB") { MathOperations.PerformMathOperation(Source, Index, Outfile, MathOperations.MathOperation.SUB); }
+            if (opcode.ToUpper() == "MUL") { MathOperations.PerformMathOperation(Source, Index, Outfile, MathOperations.MathOperation.MUL); }
+            if (opcode.ToUpper() == "DIV") { MathOperations.PerformMathOperation(Source, Index, Outfile, MathOperations.MathOperation.DIV); }
 
-            if (opcode.ToUpper() == "HALT") { Outfile.Write((byte)Opcodes.HALT); Tools.ExecutableLength++; }
+            if (opcode.ToUpper() == "HALT") { Outfile.Write((Byte)Opcodes.HALT); Tools.ExecutableLength++; }
             if (opcode.ToUpper() == "CALL") { }
             if (opcode.ToUpper() == "JTS") { }
             if (opcode.ToUpper() == "END") { Tools.IsEnd = true; Tools.ExecutableLength++; Outfile.Write((Byte)Opcodes.END); Tools.IgnoreWhiteSpaces(Source, Index); Tools.ExecutableAddress = (Int64)LabelScanner.LabelTable[(LabelScanner.ScanLabelName(Source, Index))]; return; }

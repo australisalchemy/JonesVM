@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using JonesVM.CPU;
 using JonesVM;
-using JonesVM.Executive.Compiler;
+using JonesVM.Executive.Assembler;
 
 namespace JonesVM.Executive.Runtime
 {

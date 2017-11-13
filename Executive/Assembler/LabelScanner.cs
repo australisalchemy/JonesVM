@@ -10,9 +10,7 @@ namespace JonesVM.Executive.Assembler
 {
     public static class LabelScanner
     {
-        private static Hashtable _labelTable = new Hashtable(512);
-
-        public static Hashtable LabelTable { get => _labelTable; set => _labelTable = value; }
+        public static Hashtable LabelTable { get; set; } = new Hashtable(512);
 
         public static void ScanLabel(string Source, Int32 Index, BinaryWriter Outfile)
         {
@@ -20,7 +18,7 @@ namespace JonesVM.Executive.Assembler
             {
                 if (Tools.IsLabelScan)
                 {
-                    _labelTable.Add(ScanLabelName(Source, Index), Tools.ExecutableLength);
+                    LabelTable.Add(ScanLabelName(Source, Index), Tools.ExecutableLength);
                     while (Source[Index] != '\n') { Index++; }
                     Index++;
                     return;
@@ -32,7 +30,7 @@ namespace JonesVM.Executive.Assembler
 
         public static string ScanLabelName(string Source, int Index)
         {
-            string LName = null;
+            string LabelName = null;
 
             while (char.IsLetterOrDigit(Source[Index]))
             {
@@ -42,10 +40,10 @@ namespace JonesVM.Executive.Assembler
                     break;
                 }
 
-                LName = LName + Source[Index];
+                LabelName = LabelName + Source[Index];
                 Index++;
             }
-            return LName.ToUpper();
+            return LabelName.ToUpper();
         }
     }
 }

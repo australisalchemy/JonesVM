@@ -42,7 +42,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bit.cs" />
-    <Compile Include="CPU\Operations\MachineException.cs" />
     <Compile Include="CPU\Operations\MachineOperations.cs" />
     <Compile Include="CPU\Operations\MathOperations.cs" />
     <Compile Include="CPU\Register.cs" />

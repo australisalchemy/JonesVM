@@ -18,7 +18,7 @@ namespace JonesVM.CPU.Operations
             DIV = 0xE3,
         }
 
-        public static void ExMathOperation(string Source, Int32 Index, BinaryWriter Outfile, MathOperation OperationType)
+        public static void PerformMathOperation(string Source, Int32 Index, BinaryWriter Outfile, MathOperation OperationType)
         {
             if (OperationType == MathOperation.ADD)
             {

@@ -9,3 +9,5 @@ C:\Users\shaun\Desktop\JonesVM\JonesVM\JonesVM\obj\Debug\JonesVM.dll
 C:\Users\shaun\Desktop\JonesVM\JonesVM\JonesVM\obj\Debug\JonesVM.pdb
 C:\Users\shaun\Desktop\JonesVM\JonesVM\JonesVM\bin\Debug\JonesVM.dll
 C:\Users\shaun\Desktop\JonesVM\JonesVM\JonesVM\bin\Debug\JonesVM.pdb
+C:\Users\shaun\Desktop\JonesVM\obj\Debug\JonesVM.csprojResolveAssemblyReference.cache
+C:\Users\shaun\Desktop\JonesVM\obj\Debug\JonesVM.csproj.CoreCompileInputs.cache

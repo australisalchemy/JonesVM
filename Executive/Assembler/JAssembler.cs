@@ -102,15 +102,15 @@ namespace JonesVM.Executive.Assembler
             if (opcode.ToUpper() == "CMPC") { }
             if (opcode.ToUpper() == "CMPD") { }
             if (opcode.ToUpper() == "CMPX") { }
-            if (opcode.ToUpper() == "PUSH") { OutFile.Write((byte)Opcodes.PUSH); _ExLength++; }
-            if (opcode.ToUpper() == "TAKE") { OutFile.Write((byte)Opcodes.TAKE); _ExLength++; }
+            if (opcode.ToUpper() == "PUSH") { OutFile.Write((Byte)Opcodes.PUSH); _ExLength++; }
+            if (opcode.ToUpper() == "TAKE") { OutFile.Write((Byte)Opcodes.TAKE); _ExLength++; }
 
             if (opcode.ToUpper() == "ADD") { MathOperation(OutFile, IsLabelScan, MathOperations.MathOperation.ADD); }
             if (opcode.ToUpper() == "SUB") { MathOperation(OutFile, IsLabelScan, MathOperations.MathOperation.SUB); }
             if (opcode.ToUpper() == "MUL") { MathOperation(OutFile, IsLabelScan, MathOperations.MathOperation.MUL); }
             if (opcode.ToUpper() == "DIV") { MathOperation(OutFile, IsLabelScan, MathOperations.MathOperation.DIV); }
 
-            if (opcode.ToUpper() == "HALT") { OutFile.Write((byte)Opcodes.HALT); _ExLength++; }
+            if (opcode.ToUpper() == "HALT") { OutFile.Write((Byte)Opcodes.HALT); _ExLength++; }
             if (opcode.ToUpper() == "CALL") { }
             if (opcode.ToUpper() == "JTS") { }
             if (opcode.ToUpper() == "END") { _IsEnd = true; EndJApp(OutFile, IsLabelScan); IgnoreWhiteSpaces();  _ExecAddr = (ulong)LabelScanner.LabelTable[(LabelScanner.ScanLabelName(_JSource, _JIndex))]; return; }
