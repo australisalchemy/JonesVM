@@ -10,21 +10,17 @@ namespace JonesVM.Executive.Assembler
     {
         private static Int64 _exOffsetOrigin;
 
-        private static bool _isEnd;
-        private static bool _isHex;
-        private static bool _isLabelScan;
-
         public static Int64 ExecutableAddress { get; set; }
         public static Int64 ExecutableLength { get; set; }
         public static Int64 ExecutableOrigin { get; set; }
         public static Int64 ExecutableOffset { get; set; }
         public static Int64 ExecutableOffsetOrigin { get => ExecutableOrigin + ExecutableOffset; }
 
-        public static bool IsEnd { get => _isEnd; set => _isEnd = value; }
-        public static bool IsHex { get => _isHex; set => _isHex = value; }
-        public static bool IsLabelScan { get => _isLabelScan; set => _isLabelScan = value; }
+        public static bool IsEnd { get; set; }
+        public static bool IsHex { get; set; }
+        public static bool IsLabelScan { get; set; }
 
-        
+
         /// <summary>
         /// Skips each char value if it is a whitespace.
         /// </summary>

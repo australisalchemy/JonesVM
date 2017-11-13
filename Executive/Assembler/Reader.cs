@@ -26,10 +26,10 @@ namespace JonesVM.Executive.Assembler
             if (Source[Index] == '$') { Index++; Tools.IsHex = true; }
             if (!Tools.IsHex && (char.IsLetter(Source[Index]))) { QWordValue = (UInt64)LabelScanner.LabelTable[LabelScanner.ScanLabelName(Source, Index)]; return QWordValue; }
 
-            while (char.IsLetterOrDigit(Source[Index])) { lineValue = lineValue + Source[Index]; Index++; }
+            while (Char.IsLetterOrDigit(Source[Index])) { lineValue = lineValue + Source[Index]; Index++; }
 
             if (Tools.IsHex) { QWordValue = Convert.ToUInt64(lineValue, 16); }
-            else { QWordValue = ulong.Parse(lineValue); }
+            else { QWordValue = UInt64.Parse(lineValue); }
 
             return QWordValue;
         }
