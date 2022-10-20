@@ -13,3 +13,4 @@ JonesVM
     - Execution
     - C# to Assembly
     
+    This is an abandoned project. It was developed as a learning exercise.
